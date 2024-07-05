@@ -331,7 +331,7 @@ class TTS(nn.Module):
         """
         self._check_arguments(speaker=speaker, language=language, speaker_wav=speaker_wav, **kwargs)
 
-        wav = self.tts(
+        wav, wave_length = self.tts(
             text=text,
             speaker=speaker,
             language=language,
@@ -340,7 +340,7 @@ class TTS(nn.Module):
             **kwargs,
         )
         self.synthesizer.save_wav(wav=wav, path=file_path, pipe_out=pipe_out)
-        return file_path
+        return file_path, wave_length
 
     def voice_conversion(
         self,
