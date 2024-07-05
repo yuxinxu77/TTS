@@ -381,6 +381,7 @@ class Synthesizer(nn.Module):
             vocoder_device = "cuda"
 
         if not reference_wav:  # not voice conversion
+            wave_length = []
             for sen in sens:
                 if hasattr(self.tts_model, "synthesize"):
                     outputs = self.tts_model.synthesize(
@@ -438,7 +439,9 @@ class Synthesizer(nn.Module):
                     waveform = trim_silence(waveform, self.tts_model.ap)
 
                 wavs += list(waveform)
+                wave_length.append(len(list(waveform)))
                 wavs += [0] * 10000
+                wave_length.append(10000)
         else:
             # get the speaker embedding or speaker id for the reference wav file
             reference_speaker_embedding = None
@@ -502,4 +505,4 @@ class Synthesizer(nn.Module):
         audio_time = len(wavs) / self.tts_config.audio["sample_rate"]
         print(f" > Processing time: {process_time}")
         print(f" > Real-time factor: {process_time / audio_time}")
-        return wavs
+        return wavs, wave_length
